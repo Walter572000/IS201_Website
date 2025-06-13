@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Game</title>
+    <style>
+        body {
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            font-family: Arial, sans-serif;
+        }
+        
+        canvas {
+            background: #000;
+            display: block;
+        }
+        
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 2rem;
+            visibility: hidden;
+            text-align: center;
+        }
+        
+        #overlay img {
+            max-width: 200px;
+            margin: 20px 0;
+        }
+        
+        #buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        #buttons button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="overlay">
+        <p>Too BAD!</p>
+        <img src="assets/img/tweaking.jpg" alt="Game Over Graphic" />
+        <div id="buttons">
+            <button id="retryBtn">Loose Again</button>
+            <button id="giveUpBtn">Give Up</button>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const box = 20;
+        let snake, direction, food, gameInterval;
+
+        function initGame() {
+            snake = [{
+                x: 9 * box,
+                y: 9 * box
+            }];
+            direction = null;
+            placeFood();
+            document.getElementById('overlay').style.visibility = 'hidden';
+            clearInterval(gameInterval);
+            gameInterval = setInterval(draw, 100);
+        }
+
+        function placeFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / box)) * box,
+                y: Math.floor(Math.random() * (canvas.height / box)) * box
+            };
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+            if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+            if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+            if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+        });
+
+        document.getElementById('retryBtn').addEventListener('click', initGame);
+        document.getElementById('giveUpBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = i === 0 ? 'lime' : 'white';
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = '#000';
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x, food.y, box, box);
+
+            let headX = snake[0].x;
+            let headY = snake[0].y;
+
+            if (direction === 'UP') headY -= box;
+            if (direction === 'DOWN') headY += box;
+            if (direction === 'LEFT') headX -= box;
+            if (direction === 'RIGHT') headX += box;
+
+            if (direction && (
+                    headX < 0 || headX >= canvas.width ||
+                    headY < 0 || headY >= canvas.height ||
+                    collision({
+                        x: headX,
+                        y: headY
+                    }, snake)
+                )) {
+                gameOver();
+                return;
+            }
+
+            if (headX === food.x && headY === food.y) {
+                placeFood();
+            } else {
+                snake.pop();
+            }
+
+            snake.unshift({
+                x: headX,
+                y: headY
+            });
+        }
+
+        function collision(head, array) {
+            for (let i = 1; i < array.length; i++) {
+                if (head.x === array[i].x && head.y === array[i].y) return true;
+            }
+            return false;
+        }
+
+        function gameOver() {
+            clearInterval(gameInterval);
+            document.getElementById('overlay').style.visibility = 'visible';
+        }
+
+        initGame();
+    </script>
+</body>
+
+</html>

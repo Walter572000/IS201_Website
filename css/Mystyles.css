@@ -1,0 +1,116 @@
+        .floating-headshot {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            z-index: 9999;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            border: 2px solid white;
+        }
+        
+        .floating-headshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translateX(-1%);
+        }
+        
+        .floating-headshot:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .masthead {
+            background: black !important;
+            background-image: none !important;
+        }
+        /* .masthead iframe {
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        } */
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .video-fade-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .video-fade-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            animation: fadeVideo 54.081s linear infinite;
+        }
+        
+        .fade-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            pointer-events: none;
+            opacity: 1;
+            animation: fadeOverlay 54.081s linear infinite;
+        }
+        /* Fade keyframes (based on 3.5s initial black, 1.5s fade in/out) */
+        
+        @keyframes fadeVideo {
+            0% {
+                opacity: 0;
+            }
+            7.39% {
+                opacity: 0;
+            }
+            /* 4s hold: 4 / 54.081 */
+            9.24% {
+                opacity: 1;
+            }
+            /* 5s visible */
+            90.58% {
+                opacity: 1;
+            }
+            /* 49s end of playback */
+            93.39% {
+                opacity: 0;
+            }
+            /* 50.5s fade out done */
+            100% {
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeOverlay {
+            0% {
+                opacity: 1;
+            }
+            7.39% {
+                opacity: 1;
+            }
+            9.24% {
+                opacity: 0;
+            }
+            90.58% {
+                opacity: 0;
+            }
+            93.39% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
